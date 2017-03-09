@@ -1,32 +1,3 @@
-var frontpage = [
-	"                            _           _         _       _   ",
-	"                           | |_ ___ ___| |_   ___| |_ ___| |_ ",
-	"                           |   |_ ||  _| '_| |  _|   |_ ||  _|",
-	"                           |_|_|__/|___|_,_|.|___|_|_|__/|_|  ",
-	"",
-	"",
-	"Welcome to hack.chat, a minimal, distraction-free chat application.",
-	"Channels are created and joined by going to https://hack.chat/?your-channel. There are no channel lists, so a secret channel name can be used for private discussions.",
-	"",
-	"Here are some pre-made channels you can join:",
-	"?lounge ?meta",
-	"?math ?physics ?chemistry",
-	"?technology ?programming",
-	"?games ?banana",
-	"And here's a random one generated just for you: ?" + Math.random().toString(36).substr(2, 8),
-	"",
-	"",
-	"Formatting:",
-	"Whitespace is preserved, so source code can be pasted verbatim.",
-	"Surround LaTeX with a dollar sign for inline style $\\zeta(2) = \\pi^2/6$, and two dollars for display. $$\\int_0^1 \\int_0^1 \\frac{1}{1-xy} dx dy = \\frac{\\pi^2}{6}$$",
-	"",
-	"GitHub: https://github.com/AndrewBelt/hack.chat",
-	"Android apps: https://goo.gl/UkbKYy https://goo.gl/qasdSu",
-	"",
-	"Server and web client released under the GNU General Public License.",
-	"No message history is retained on the hack.chat server.",
-].join("\n")
-
 function $(query) {return document.querySelector(query)}
 
 function localStorageGet(key) {
@@ -64,7 +35,12 @@ function join(channel) {
 	}
 	else {
 		// for local installs
-		ws = new WebSocket('ws://' + document.domain + ':6060')
+		if (document.location.protocol == 'https:') {
+			ws = new WebSocket('wss://' + document.domain + ':6060')
+		}
+		else {
+			ws = new WebSocket('ws://' + document.domain + ':6060')
+		}
 	}
 
 	var wasConnected = false
