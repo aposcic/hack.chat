@@ -86,21 +86,21 @@ var COMMANDS = {
 			return
 		}
 		pushMessage(args)
-		if ($('#notifications-enabled').checked && args.nick != myNick) {
+		if (!windowActive && $('#notifications-enabled').checked && args.nick != myNick) {
 			showNotification(args.nick + ': ' + args.text)
 		}
 	},
 	info: function(args) {
 		args.nick = '*'
 		pushMessage(args)
-		if ($('#notifications-enabled').checked) {
+		if (!windowActive && $('#notifications-enabled').checked) {
 			showNotification(args.nick + ': ' + args.text)
 		}
 	},
 	warn: function(args) {
 		args.nick = '!'
 		pushMessage(args)
-		if ($('#notifications-enabled').checked) {
+		if (!windowActive && $('#notifications-enabled').checked) {
 			showNotification(args.nick + ': ' + args.text)
 		}
 	},
