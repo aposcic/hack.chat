@@ -109,14 +109,23 @@ var COMMANDS = {
 			return
 		}
 		pushMessage(args)
+		if ($('#notifications-enabled').checked && args.nick != myNick) {
+			showNotification(args.nick + ': ' + args.text)
+		}
 	},
 	info: function(args) {
 		args.nick = '*'
 		pushMessage(args)
+		if ($('#notifications-enabled').checked) {
+			showNotification(args.nick + ': ' + args.text)
+		}
 	},
 	warn: function(args) {
 		args.nick = '!'
 		pushMessage(args)
+		if ($('#notifications-enabled').checked) {
+			showNotification(args.nick + ': ' + args.text)
+		}
 	},
 	onlineSet: function(args) {
 		var nicks = args.nicks
@@ -220,6 +229,19 @@ function pushMessage(args) {
 
 	unread += 1
 	updateTitle()
+}
+
+
+function showNotification(message) {
+	if (window.Notification && Notification.permission === 'granted') {
+		var options = {
+			body: message,
+			tag: myChannel,
+			icon: 'notification.png'
+		}
+		var n = new Notification('hack.chat: ?' + myChannel, options);
+		setTimeout(n.close.bind(n), 10000); 
+	}
 }
 
 
@@ -412,8 +434,16 @@ if (localStorageGet('pin-sidebar') == 'true') {
 if (localStorageGet('joined-left') == 'false') {
 	$('#joined-left').checked = false
 }
+if (localStorageGet('notifications-enabled') == 'true' && Notification.permission === 'granted') {
+	$('#notifications-enabled').checked = true
+}
 if (localStorageGet('parse-latex') == 'false') {
 	$('#parse-latex').checked = false
+}
+
+// Disable browser notifications toggle if notifications denied or not available
+if (!window.Notification || Notification.permission === 'denied') {
+	$('#notifications-enabled').disabled = true
 }
 
 $('#pin-sidebar').onchange = function(e) {
@@ -421,6 +451,25 @@ $('#pin-sidebar').onchange = function(e) {
 }
 $('#joined-left').onchange = function(e) {
 	localStorageSet('joined-left', !!e.target.checked)
+}
+$('#notifications-enabled').onchange = function(e) {
+	localStorageSet('notifications-enabled', !!e.target.checked)
+	// Check if notifications already enabled, otherwise ask for permission
+	if (e.target.checked) {
+		if (window.Notification && Notification.permission !== "granted") {
+			Notification.requestPermission(function (status) {
+				if (Notification.permission !== status) {
+					Notification.permission = status;
+				}
+				if (status !== 'granted') {
+					$('#notifications-enabled').checked = false;
+				}
+				if (status === 'denied') {
+					$('#notifications-enabled').disabled = true;
+				}
+			});
+		}
+	}
 }
 $('#parse-latex').onchange = function(e) {
 	localStorageSet('parse-latex', !!e.target.checked)
