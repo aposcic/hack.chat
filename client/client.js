@@ -20,6 +20,7 @@ var myNick = localStorageGet('my-nick')
 var myChannel = window.location.search.replace(/^\?/, '')
 var lastSent = [""]
 var lastSentPos = 0
+var log = ""
 
 
 // Ping server every 50 seconds to retain WebSocket connection
@@ -195,6 +196,13 @@ function pushMessage(args) {
 	}
 
 	messageEl.appendChild(textEl)
+
+	// Prepare simple log entry
+	log += '[' + date.toLocaleString(undefined, { hour12: false }) + '] '
+	if (args.nick) {
+		log += "<" + args.nick + "> "
+	}
+	log += args.text + "\n"
 
 	// Scroll to bottom
 	var atBottom = isAtBottom()
@@ -399,6 +407,14 @@ $('#clear-messages').onclick = function() {
 	while (messages.firstChild) {
 		messages.removeChild(messages.firstChild)
 	}
+	log = ""
+}
+
+$('#save-messages').onclick = function() {
+	// Save message log to file
+	var blob = new Blob([log], {type: 'data:text/plain;charset=utf-8'});
+	date = new Date(Date.now())
+	saveAs(blob, myChannel + "_" + date.toISOString() + ".txt");
 }
 
 // Restore settings from localStorage

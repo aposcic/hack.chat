@@ -9,6 +9,7 @@ html
 		link#scheme-link(rel="stylesheet", href="schemes/atelier-dune.css")
 		script(src="katex/katex.min.js")
 		script(src="katex/contrib/auto-render.min.js")
+		script(src="filesaver/FileSaver.min.js")
 	body
 		article.container
 			#messages.messages
@@ -35,6 +36,8 @@ html
 					label(for="parse-latex") Parse LaTeX
 				p
 					button#clear-messages Clear messages
+				p
+					button#save-messages Save messages
 				h4 Color scheme
 				select#scheme-selector
 				h4 Users online
