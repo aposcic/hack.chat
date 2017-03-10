@@ -206,12 +206,12 @@ function pushMessage(args) {
 
 	messageEl.appendChild(textEl)
 
-	// Prepare simple log entry
+	// Prepare and append simple log entry
 	log += '[' + date.toLocaleString(undefined, { hour12: false }) + '] '
 	if (args.nick) {
 		log += "<" + args.nick + "> "
 	}
-	log += args.text + "\n"
+	log += args.text + "\r\n"
 
 	// Scroll to bottom
 	var atBottom = isAtBottom()
@@ -232,7 +232,7 @@ function showNotification(message) {
 			tag: myChannel,
 			icon: 'notification.png'
 		}
-		var n = new Notification('hack.chat: ?' + myChannel, options);
+		var n = new Notification('hack.chat/?' + myChannel, options);
 		setTimeout(n.close.bind(n), 10000); 
 	}
 }
