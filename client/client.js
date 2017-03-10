@@ -230,7 +230,7 @@ function showNotification(message) {
 		var options = {
 			body: message,
 			tag: myChannel,
-			icon: 'notification.ico'
+			icon: 'favicon.ico'
 		}
 		var n = new Notification('hack.chat/?' + myChannel, options);
 		setTimeout(n.close.bind(n), 10000); 
