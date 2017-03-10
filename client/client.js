@@ -86,21 +86,24 @@ var COMMANDS = {
 			return
 		}
 		pushMessage(args)
-		if (!windowActive && $('#notifications-enabled').checked && args.nick != myNick) {
-			showNotification(args.nick + ': ' + args.text)
+		if (!windowActive) {
+			if (($('#notify-chat').checked && args.nick != myNick) 
+					|| ($('#notify-mentions').checked && args.text.indexOf('@' + myNick) !== -1)) {
+				showNotification(args.nick + ': ' + args.text)
+			}
 		}
 	},
 	info: function(args) {
 		args.nick = '*'
 		pushMessage(args)
-		if (!windowActive && $('#notifications-enabled').checked) {
+		if (!windowActive && $('#notify-info').checked) {
 			showNotification(args.nick + ': ' + args.text)
 		}
 	},
 	warn: function(args) {
 		args.nick = '!'
 		pushMessage(args)
-		if (!windowActive && $('#notifications-enabled').checked) {
+		if (!windowActive && $('#notify-info').checked) {
 			showNotification(args.nick + ': ' + args.text)
 		}
 	},
@@ -118,12 +121,18 @@ var COMMANDS = {
 		if ($('#joined-left').checked) {
 			pushMessage({nick: '*', text: nick + " joined"})
 		}
+		if (!windowActive && $('#notify-info').checked) {
+			showNotification(args.nick + " joined")
+		}
 	},
 	onlineRemove: function(args) {
 		var nick = args.nick
 		userRemove(nick)
 		if ($('#joined-left').checked) {
 			pushMessage({nick: '*', text: nick + " left"})
+		}
+		if (!windowActive && $('#notify-info').checked) {
+			showNotification(args.nick + " left")
 		}
 	},
 }
@@ -426,16 +435,29 @@ if (localStorageGet('pin-sidebar') == 'true') {
 if (localStorageGet('joined-left') == 'false') {
 	$('#joined-left').checked = false
 }
-if (localStorageGet('notifications-enabled') == 'true' && Notification.permission === 'granted') {
-	$('#notifications-enabled').checked = true
-}
 if (localStorageGet('parse-latex') == 'false') {
 	$('#parse-latex').checked = false
+}
+if (Notification.permission == 'granted') {
+	if (localStorageGet('notify-chat') == 'true') {
+		$('#notify-chat').checked = true
+	}
+	if (localStorageGet('notify-mentions') == 'true') {
+		$('#notify-mentions').checked = true
+	}
+	if (localStorageGet('notify-info') == 'true') {
+		$('#notify-info').checked = true
+	}
 }
 
 // Disable browser notifications toggle if notifications denied or not available
 if (!window.Notification || Notification.permission === 'denied') {
-	$('#notifications-enabled').disabled = true
+	$('#notify-chat').disabled = true
+	$('#notify-chat').checked = false
+	$('#notify-mentions').disabled = true
+	$('#notify-mentions').checked = false
+	$('#notify-info').disabled = true
+	$('#notify-info').checked = false
 }
 
 $('#pin-sidebar').onchange = function(e) {
@@ -444,27 +466,44 @@ $('#pin-sidebar').onchange = function(e) {
 $('#joined-left').onchange = function(e) {
 	localStorageSet('joined-left', !!e.target.checked)
 }
-$('#notifications-enabled').onchange = function(e) {
-	localStorageSet('notifications-enabled', !!e.target.checked)
+$('#parse-latex').onchange = function(e) {
+	localStorageSet('parse-latex', !!e.target.checked)
+}
+
+// Notifications
+
+function updateNotifications(e)
+{
 	// Check if notifications already enabled, otherwise ask for permission
-	if (e.target.checked) {
+	if (e.checked) {
 		if (window.Notification && Notification.permission !== "granted") {
 			Notification.requestPermission(function (status) {
 				if (Notification.permission !== status) {
 					Notification.permission = status;
 				}
-				if (status !== 'granted') {
-					$('#notifications-enabled').checked = false;
+				if (status === 'granted') {
+					localStorageSet(e.id, true)
+				}
+				else {
+					$('#notify-chat').checked = false
+					localStorageSet('notify-chat', false)
+					$('#notify-mentions').checked = false
+					localStorageSet('notify-mentions', false)
+					$('#notify-info').checked = false
+					localStorageSet('notify-info', false)
 				}
 				if (status === 'denied') {
-					$('#notifications-enabled').disabled = true;
+					$('#notify-chat').disabled = true
+					$('#notify-mentions').disabled = true
+					$('#notify-info').disabled = true
 				}
 			});
+		} else if (window.Notification) {
+			localStorageSet(e.id, true)
 		}
+	} else {
+		localStorageSet(e.id, false)
 	}
-}
-$('#parse-latex').onchange = function(e) {
-	localStorageSet('parse-latex', !!e.target.checked)
 }
 
 // User list

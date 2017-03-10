@@ -29,11 +29,18 @@ html
 					input#joined-left(type="checkbox", checked)
 					label(for="joined-left") Join/left notify
 				p
-					input#notifications-enabled(type="checkbox", unchecked)
-					label(for="notifications-enabled") Browser notifications
-				p
 					input#parse-latex(type="checkbox", checked)
 					label(for="parse-latex") Parse LaTeX
+				h4 Desktop Notifications
+				p
+					input#notify-mentions(type="checkbox" onchange="updateNotifications(this)", unchecked)
+					label(for="notify-mentions") Mentions
+				p
+					input#notify-chat(type="checkbox" onchange="updateNotifications(this)", unchecked)
+					label(for="notify-chat") Chat messages
+				p
+					input#notify-info(type="checkbox" onchange="updateNotifications(this)", unchecked)
+					label(for="notify-info") Info messages
 				p
 					button#clear-messages Clear messages
 				p
