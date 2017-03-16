@@ -357,7 +357,7 @@ $('#chatinput').onkeydown = function(e) {
 		lastSent[lastSentPos] = ""
 		updateInputSize()
 	}
-	else if (e.keyCode == 9 /* TAB */) {
+	else if (e.keyCode == 9 /* TAB */ && !e.ctrlKey) {
 		// Tab complete nicknames starting with @
 		e.preventDefault()
 		var pos = e.target.selectionStart || 0
