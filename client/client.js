@@ -89,7 +89,7 @@ var COMMANDS = {
 		if (!windowActive) {
 			if (($('#notify-chat').checked && args.nick != myNick) 
 					|| ($('#notify-mentions').checked && args.text.indexOf('@' + myNick) !== -1)) {
-				showNotification(args.nick + ': ' + args.text)
+				showNotification('<' + args.nick + '> ' + args.text)
 			}
 		}
 	},
@@ -97,14 +97,14 @@ var COMMANDS = {
 		args.nick = '*'
 		pushMessage(args)
 		if (!windowActive && $('#notify-info').checked) {
-			showNotification(args.nick + ': ' + args.text)
+			showNotification('<' + args.nick + '> ' + args.text)
 		}
 	},
 	warn: function(args) {
 		args.nick = '!'
 		pushMessage(args)
 		if (!windowActive && $('#notify-info').checked) {
-			showNotification(args.nick + ': ' + args.text)
+			showNotification('<' + args.nick + '> ' + args.text)
 		}
 	},
 	onlineSet: function(args) {
@@ -122,7 +122,7 @@ var COMMANDS = {
 			pushMessage({nick: '*', text: nick + " joined"})
 		}
 		if (!windowActive && $('#notify-info').checked) {
-			showNotification(args.nick + " joined")
+			showNotification('<*> ' + args.nick + " joined")
 		}
 	},
 	onlineRemove: function(args) {
@@ -132,7 +132,7 @@ var COMMANDS = {
 			pushMessage({nick: '*', text: nick + " left"})
 		}
 		if (!windowActive && $('#notify-info').checked) {
-			showNotification(args.nick + " left")
+			showNotification('<*> ' + args.nick + " left")
 		}
 	},
 }
