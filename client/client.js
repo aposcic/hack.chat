@@ -285,7 +285,7 @@ window.onscroll = function() {
 	}
 }
 
-window.onbeforeunload = function() {
+window.onbeforeunload = function(e) {
 	if (unread > 0) {
 		var confirmClose = 'You have unread messages. Are you sure you want to close the chat?';
 		e.returnValue = confirmClose;
