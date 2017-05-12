@@ -285,6 +285,14 @@ window.onscroll = function() {
 	}
 }
 
+window.onbeforeunload = function() {
+	if (unread > 0) {
+		var confirmClose = 'You have unread messages. Are you sure you want to close the chat?';
+		e.returnValue = confirmClose;
+		return confirmClose;
+	}
+}
+
 function isAtBottom() {
 	return (window.innerHeight + window.scrollY) >= (document.body.scrollHeight - 1)
 }
