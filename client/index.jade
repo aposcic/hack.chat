@@ -31,6 +31,9 @@ html
 				p
 					input#parse-latex(type="checkbox", checked)
 					label(for="parse-latex") Parse LaTeX
+				p
+					input#warn-close(type="checkbox")
+					label(for="warn-close") Warn before closing
 				h4 Desktop Notifications
 				p
 					input#notify-mentions(type="checkbox" onchange="updateNotifications(this)", unchecked)

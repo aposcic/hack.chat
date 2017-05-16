@@ -286,8 +286,8 @@ window.onscroll = function() {
 }
 
 window.onbeforeunload = function(e) {
-	if (unread > 0) {
-		var confirmClose = 'You have unread messages. Are you sure you want to close the chat?';
+	if ($('#warn-close').checked || unread > 0) {
+		var confirmClose = 'You might have unread messages. Are you sure you want to close the chat?';
 		e.returnValue = confirmClose;
 		return confirmClose;
 	}
@@ -446,6 +446,9 @@ if (localStorageGet('joined-left') == 'false') {
 if (localStorageGet('parse-latex') == 'false') {
 	$('#parse-latex').checked = false
 }
+if (localStorageGet('warn-close') == 'true') {
+	$('#warn-close').checked = true
+}
 if (Notification.permission == 'granted') {
 	if (localStorageGet('notify-chat') == 'true') {
 		$('#notify-chat').checked = true
@@ -476,6 +479,9 @@ $('#joined-left').onchange = function(e) {
 }
 $('#parse-latex').onchange = function(e) {
 	localStorageSet('parse-latex', !!e.target.checked)
+}
+$('#warn-close').onchange = function(e) {
+	localStorageSet('warn-close', !!e.target.checked)
 }
 
 // Notifications
