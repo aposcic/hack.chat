@@ -21,6 +21,7 @@ var myChannel = window.location.search.replace(/^\?/, '')
 var lastSent = [""]
 var lastSentPos = 0
 var log = ""
+var notificationSound = new Audio('notification.mp3');
 
 
 // Ping server every 50 seconds to retain WebSocket connection
@@ -231,6 +232,9 @@ function showNotification(message) {
 			body: message,
 			tag: myChannel,
 			icon: 'favicon.ico'
+		}
+		if ($('#enable-sound').checked) {
+			notificationSound.play();
 		}
 		var n = new Notification('hack.chat/?' + myChannel, options);
 		setTimeout(n.close.bind(n), 10000); 
@@ -460,6 +464,9 @@ if (Notification.permission == 'granted') {
 		$('#notify-info').checked = true
 	}
 }
+if (localStorageGet('enable-sound') == 'true') {
+	$('#enable-sound').checked = true
+}
 
 // Disable browser notifications toggle if notifications denied or not available
 if (!window.Notification || Notification.permission === 'denied') {
@@ -482,6 +489,9 @@ $('#parse-latex').onchange = function(e) {
 }
 $('#warn-close').onchange = function(e) {
 	localStorageSet('warn-close', !!e.target.checked)
+}
+$('#enable-sound').onchange = function(e) {
+	localStorageSet('enable-sound', !!e.target.checked)
 }
 
 // Notifications
