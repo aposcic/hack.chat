@@ -21,7 +21,10 @@ var myChannel = window.location.search.replace(/^\?/, '')
 var lastSent = [""]
 var lastSentPos = 0
 var log = ""
+
+// Notifications related stuff
 var notificationSound = new Audio('notification.mp3');
+var lastNotificationTimestamp = null;
 
 
 // Ping server every 50 seconds to retain WebSocket connection
@@ -233,9 +236,12 @@ function showNotification(message) {
 			tag: myChannel,
 			icon: 'favicon.ico'
 		}
-		if ($('#enable-sound').checked) {
+		if ($('#enable-sound').checked && 
+			(lastNotificationTimestamp == null || 
+				Date.now() - lastNotificationTimestamp > 10000)) {
 			notificationSound.play();
 		}
+		lastNotificationTimestamp = Date.now();
 		var n = new Notification('hack.chat/?' + myChannel, options);
 		setTimeout(n.close.bind(n), 10000); 
 	}
