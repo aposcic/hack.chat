@@ -34,19 +34,26 @@ window.setInterval(function() {
 
 
 function join(channel) {
+	wsAddress = ""
 	if (document.domain == 'hack.chat') {
 		// For https://hack.chat/
-		ws = new WebSocket('wss://hack.chat/chat-ws')
-	}
-	else {
-		// for local installs
+		wsAddress = 'wss://hack.chat/chat-ws';
+	} else {
 		if (document.location.protocol == 'https:') {
-			ws = new WebSocket('wss://' + document.domain + ':6060')
+			wsAddress = 'wss://' + document.domain;
+		} else {
+			wsAddress = 'ws://' + document.domain;
 		}
-		else {
-			ws = new WebSocket('ws://' + document.domain + ':6060')
+
+		// for local installs, connect to a specific port
+		// otherwise assume deployment behind reverse proxy
+		if (validator.isFQDN(document.domain + "") && !validator.isIP(document.domain)) {
+			wsAddress = wsAddress + '/chat-ws';
+		} else {
+			wsAddress = wsAddress + ':6060';
 		}
 	}
+	ws = new WebSocket(wsAddress);
 
 	var wasConnected = false
 
